@@ -1,22 +1,15 @@
-FROM balenalib/rpi-raspbian
+FROM nginx:mainline-alpine
 LABEL authors="Ludovic Roguet <code@fourteenislands.io>"
 LABEL maintainer="Leonardo Amaral <docker@leonardoamaral.com.br>"
 
 # Install wget and install/updates certificates
-RUN apt-get update \
- && apt-get install -y -q --no-install-recommends \
-    ca-certificates \
-    git \
-    mercurial \
-    golang \
-    nginx \
-    wget \
- && apt-get clean \
- && rm -r /var/lib/apt/lists/*
+RUN apk add --no-cache --virtual .run-deps \
+    ca-certificates go bash wget openssl \
+    && update-ca-certificates
 
 # Configure Nginx and apply fix for very long server names
-RUN echo "daemon off;" >>/etc/nginx/nginx.conf \
- && sed -i 's/^http {/&\n    server_names_hash_bucket_size 128;/g' /etc/nginx/nginx.conf
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf \
+&& sed -i 's/worker_processes 1/worker_processes auto/' /etc/nginx/nginx.conf
 
 # Install Forego
 ENV GOPATH /opt/go
