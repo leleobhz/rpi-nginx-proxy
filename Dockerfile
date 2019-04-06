@@ -1,5 +1,6 @@
-FROM resin/rpi-raspbian
-MAINTAINER Ludovic Roguet <code@fourteenislands.io>
+FROM balenalib/rpi-raspbian
+LABEL authors="Ludovic Roguet <code@fourteenislands.io>"
+LABEL maintainer="Leonardo Amaral <docker@leonardoamaral.com.br>"
 
 # Install wget and install/updates certificates
 RUN apt-get update \
@@ -22,7 +23,7 @@ ENV GOPATH /opt/go
 ENV PATH $PATH:$GOPATH/bin
 RUN go get -u github.com/ddollar/forego
 
-ENV DOCKER_GEN_VERSION 0.7.3
+ENV DOCKER_GEN_VERSION 0.7.4
 
 RUN wget https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-armhf-$DOCKER_GEN_VERSION.tar.gz \
  && tar -C /usr/local/bin -xvzf docker-gen-linux-armhf-$DOCKER_GEN_VERSION.tar.gz \
